@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ══════════════════════════════════════════════════════════════
+     PORTFÓLIO — INTELIGÊNCIA ARTIFICIAL
+     Conceito: "Espaço Latente" — suas competências como clusters
+     em um espaço vetorial. Procure por "EDITE:" para personalizar.
+     ══════════════════════════════════════════════════════════════ -->
+<title>Willyam Rodrigo — Inteligência Artificial</title>
+<meta name="description" content="Analista de Inteligência Artificial: Machine Learning, LLMs, RAG, PLN e Visão Computacional no ecossistema Microsoft Azure.">
+<!-- Favicon: ponto com degradê índigo→teal, no espírito do site -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234B44C9'/%3E%3Cstop offset='1' stop-color='%230FA697'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='13' fill='url(%23g)'/%3E%3C/svg%3E">
+<!-- Compartilhamento (LinkedIn, WhatsApp, etc.). EDITE: troque a URL quando publicar -->
+<meta property="og:title" content="Willyam Rodrigo — Inteligência Artificial">
+<meta property="og:description" content="Analista de IA: Machine Learning, LLMs, RAG, PLN e Visão Computacional.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wrasprodigio.github.io">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── Tokens: colormap índigo → teal (inspirado em viridis) ──── */
+:root{
+  --paper:#F5F6F9;
+  --paper-2:#FFFFFF;
+  --ink:#14161F;
+  --ink-soft:#59617140;
+  --ink-mut:#5A6474;
+  --indigo:#4B44C9;
+  --indigo-deep:#1C1A4E;
+  --blue:#3E7BD4;
+  --cyan:#1E9FB8;
+  --teal:#0FA697;
+  --amber:#EDA43C;      /* usado só no destaque de "consulta" — raro = especial */
+  --line:#E2E4EC;
+  --radius:15px;
+  --font-display:"Bricolage Grotesque",system-ui,sans-serif;
+  --font-body:"Public Sans",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --grad:linear-gradient(120deg,var(--indigo) 0%,var(--cyan) 62%,var(--teal) 100%);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.62;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--indigo);color:#fff}
+a{color:var(--indigo);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2.5px solid var(--indigo);outline-offset:3px;border-radius:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+
+/* ─── Barra de progresso ─────────────────────────────────────── */
+#progress{position:fixed;top:0;left:0;height:2.5px;width:0;z-index:80;background:var(--grad)}
+
+/* ─── Navegação ──────────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:60;background:rgba(245,246,249,.82);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;
+  padding:15px 26px;max-width:1120px;margin:0 auto;position:relative}
+.nav-logo{font-family:var(--font-mono);font-weight:600;font-size:.9rem;color:var(--ink);letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+.nav-logo .mark{width:16px;height:16px;border-radius:50%;background:var(--grad);box-shadow:0 0 0 3px rgba(75,68,201,.14)}
+.nav-links{display:flex;gap:6px;list-style:none}
+.nav-links a{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-mut);padding:7px 12px;border-radius:8px;transition:color .2s,background .2s}
+.nav-links a:hover{color:var(--indigo);background:rgba(75,68,201,.07);text-decoration:none}
+.nav-links a.active{color:var(--indigo);background:rgba(75,68,201,.1)}
+.burger{display:none;background:var(--paper-2);border:1.5px solid var(--line);border-radius:9px;
+  padding:8px 13px;font-family:var(--font-mono);font-size:.72rem;color:var(--ink);cursor:pointer;letter-spacing:.06em}
+@media(max-width:780px){
+  .burger{display:inline-flex;align-items:center;gap:7px}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper-2);
+    border-bottom:1px solid var(--line);flex-direction:column;gap:0;padding:6px 26px 12px;
+    box-shadow:0 16px 34px rgba(20,22,31,.09)}
+  .nav-links.open{display:flex}
+  .nav-links li{border-bottom:1px solid var(--line)}
+  .nav-links li:last-child{border-bottom:0}
+  .nav-links a{display:block;padding:14px 0;border-radius:0}
+}
+
+/* ─── Ticker de stack (ferramentas concretas) ────────────────── */
+.ticker{border-bottom:1px solid var(--line);background:var(--paper-2);overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.ticker-track{display:flex;width:max-content;animation:tick 52s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker span{font-family:var(--font-mono);font-size:.7rem;font-weight:500;letter-spacing:.14em;
+  padding:10px 0 10px 22px;color:var(--ink-mut);text-transform:uppercase;white-space:nowrap}
+.ticker .sep{color:var(--cyan);padding-left:22px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ─── Tipografia de seção ────────────────────────────────────── */
+section{padding:100px 0}
+.eyebrow{font-family:var(--font-mono);font-size:.75rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--indigo);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--grad)}
+h2{font-family:var(--font-display);font-weight:700;font-size:clamp(1.85rem,3.7vw,2.55rem);
+  letter-spacing:-.02em;margin-bottom:18px;line-height:1.1}
+.lead{color:var(--ink-mut);max-width:60ch}
+
+/* ─── Hero ───────────────────────────────────────────────────── */
+.hero{padding:88px 0 72px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-family:var(--font-display);font-weight:800;
+  font-size:clamp(2.6rem,5.6vw,4.4rem);line-height:1.01;letter-spacing:-.032em;max-width:12ch}
+.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;
+  background-clip:text;color:transparent}
+.hero .sub{margin-top:24px;font-size:1.1rem;color:var(--ink-mut);max-width:46ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.btn{font-family:var(--font-mono);font-size:.84rem;font-weight:500;padding:13px 22px;
+  border-radius:11px;border:1.5px solid transparent;display:inline-flex;align-items:center;gap:9px;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.btn .arr{display:inline-block;transition:transform .18s ease}
+.btn:hover{text-decoration:none;transform:translateY(-2px)}
+.btn:hover .arr{transform:translateX(3px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--indigo);color:#fff}
+.btn-primary:hover{box-shadow:0 12px 26px rgba(75,68,201,.32)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:var(--paper-2)}
+.btn-ghost:hover{border-color:var(--indigo);box-shadow:0 8px 20px rgba(20,22,31,.06)}
+.hero-facts{display:flex;flex-wrap:wrap;gap:11px 26px;margin-top:38px}
+.fact{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-mut)}
+.fact b{color:var(--ink);font-weight:600}
+.fact .dot{color:var(--teal)}
+
+/* Entrada orquestrada */
+.load{opacity:0;transform:translateY(15px);animation:up .7s cubic-bezier(.2,.7,.3,1) forwards}
+.d1{animation-delay:.05s}.d2{animation-delay:.13s}.d3{animation-delay:.22s}
+.d4{animation-delay:.31s}.d5{animation-delay:.4s}
+@keyframes up{to{opacity:1;transform:none}}
+
+/* ─── ASSINATURA: painel de competências ─────────────────────── */
+.skills-panel{position:relative;background:var(--paper-2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:20px;box-shadow:0 30px 60px -34px rgba(28,26,78,.4);
+  opacity:0;animation:up .8s cubic-bezier(.2,.7,.3,1) .35s forwards}
+.skills-head{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 16px;
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.09em;color:var(--ink-mut);text-transform:uppercase}
+.skills-head .live{display:flex;align-items:center;gap:7px;color:var(--indigo)}
+.skills-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);
+  box-shadow:0 0 0 0 rgba(15,166,151,.5);animation:live 2.4s infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(15,166,151,.45)}70%{box-shadow:0 0 0 7px rgba(15,166,151,0)}100%{box-shadow:0 0 0 0 rgba(15,166,151,0)}}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.skill-card{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(75,68,201,.05),rgba(15,166,151,.05));
+  border:1px solid var(--line);transition:transform .18s ease,border-color .18s ease}
+.skill-card:hover{transform:translateY(-2px);border-color:var(--indigo)}
+.skill-ic{font-size:1.5rem;line-height:1;flex:0 0 auto}
+.skill-card b{display:block;font-size:.95rem;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
+.skill-card span{font-size:.8rem;color:var(--ink-mut);line-height:1.35}
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .hero h1{max-width:16ch}
+  .skills-panel{max-width:520px}
+}
+@media(max-width:480px){
+  .skills-grid{grid-template-columns:1fr}
+}
+
+/* ─── Banda do pipeline RAG (motivo secundário) ──────────────── */
+.rag-band{background:
+  radial-gradient(760px 220px at 50% -40px,rgba(75,68,201,.18),transparent 65%),var(--indigo-deep);
+  padding:56px 0 50px;border-block:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+.rag-band::before{content:"";position:absolute;inset:0;opacity:.07;
+  background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px);background-size:38px 38px}
+.rag-inner{position:relative}
+.rag-ey{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:#A9B6E8;text-align:center;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:11px}
+.rag-ey::before,.rag-ey::after{content:"";width:26px;height:1px;background:rgba(169,182,232,.4)}
+.rag-title{text-align:center;font-family:var(--font-display);font-weight:600;color:#fff;
+  font-size:1.15rem;letter-spacing:-.01em;margin-bottom:34px}
+.pipeline{display:flex;align-items:stretch;justify-content:space-between;max-width:920px;margin:0 auto}
+.p-node{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 6px}
+.p-icon{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.24);color:#EAF0FF;position:relative}
+.p-icon svg{width:26px;height:26px}
+.p-icon::after{content:"";position:absolute;inset:-2px;border-radius:15px;border:2px solid var(--amber);
+  opacity:0;box-shadow:0 0 20px 3px rgba(227,163,44,.7),inset 0 0 12px rgba(227,163,44,.4);
+  animation:pn 5s infinite;animation-delay:var(--d,0s)}
+@keyframes pn{0%{opacity:0}4%{opacity:1}16%{opacity:1}22%{opacity:0}100%{opacity:0}}
+.p-label{font-family:var(--font-mono);font-size:.71rem;font-weight:600;letter-spacing:.09em;
+  text-transform:uppercase;color:#EAF0FF;margin-top:13px}
+.p-sub{font-family:var(--font-mono);font-size:.64rem;color:#8695C4;margin-top:3px}
+.p-link{flex:0 0 42px;align-self:flex-start;margin-top:26px;height:2px;position:relative}
+.p-link::before{content:"";position:absolute;inset:0;
+  background:rgba(227,163,44,.35)}
+.p-link::after{content:"";position:absolute;top:-4px;left:-4px;width:10px;height:10px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 14px 4px rgba(227,163,44,.7);opacity:0;
+  animation:pk 5s infinite;animation-delay:var(--pd,0s)}
+@keyframes pk{0%{left:-4px;opacity:0}4%{opacity:1}16%{left:calc(100% - 6px);opacity:1}20%{left:calc(100% - 6px);opacity:0}100%{left:calc(100% - 6px);opacity:0}}
+@media(max-width:840px){
+  .pipeline{flex-direction:column;align-items:center;gap:14px}
+  .p-link{flex:0 0 auto;width:2px;height:30px;margin-top:0;align-self:center}
+  .p-link::before{background:rgba(227,163,44,.35)}
+  .p-link::after{left:-3.5px;top:-4px;animation-name:pkV}
+  @keyframes pkV{0%{top:-4px;opacity:0}4%{opacity:1}16%{top:calc(100% - 6px);opacity:1}20%{top:calc(100% - 6px);opacity:0}100%{opacity:0}}
+}
+
+/* ─── Sobre ──────────────────────────────────────────────────── */
+.sobre-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:52px;align-items:start}
+.sobre-card{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px;box-shadow:0 20px 46px -30px rgba(28,26,78,.22);position:relative}
+.sobre-card::before{content:"";position:absolute;top:0;left:28px;right:28px;height:2px;background:var(--grad);border-radius:2px}
+.sobre-card h3{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--indigo);margin-bottom:16px;padding-top:4px}
+.sobre-card ul{list-style:none}
+.sobre-card li{padding:11px 0;border-bottom:1px solid var(--line);font-size:.93rem;display:flex;gap:12px;align-items:baseline}
+.sobre-card li:last-child{border-bottom:0}
+.sobre-card li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan);flex:0 0 6px;transform:translateY(-1px)}
+@media(max-width:840px){.sobre-grid{grid-template-columns:1fr}}
+
+/* ─── Projetos ───────────────────────────────────────────────── */
+#projetos{background:var(--paper-2);border-block:1px solid var(--line)}
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:46px}
+.proj{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:28px;display:flex;flex-direction:column;gap:15px;position:relative;overflow:hidden;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.proj::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  transition:opacity .3s ease;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),rgba(75,68,201,.1),transparent 65%)}
+.proj:hover{transform:translateY(-4px);box-shadow:0 22px 46px -20px rgba(28,26,78,.28);border-color:var(--indigo)}
+.proj:hover::after{opacity:1}
+.proj-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.proj-id{font-family:var(--font-mono);font-size:.7rem;color:var(--ink-mut);letter-spacing:.12em}
+.status{font-family:var(--font-mono);font-size:.63rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:5px 11px;border-radius:99px;border:1px solid;display:inline-flex;align-items:center;gap:6px}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.status.online{color:var(--teal);border-color:rgba(15,166,151,.4);background:rgba(15,166,151,.08)}
+.status.dev{color:var(--indigo);border-color:rgba(75,68,201,.35);background:rgba(75,68,201,.07)}
+.status.plan{color:var(--ink-mut);border-color:var(--line)}
+.proj h3{font-family:var(--font-display);font-weight:700;font-size:1.3rem;letter-spacing:-.015em}
+.proj p{font-size:.92rem;color:var(--ink-mut);flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-family:var(--font-mono);font-size:.66rem;padding:4px 10px;border-radius:7px;
+  background:var(--paper-2);border:1px solid var(--line);color:var(--ink-mut)}
+.proj-links{display:flex;gap:18px;font-family:var(--font-mono);font-size:.79rem}
+.proj-links .off{color:var(--ink-mut);opacity:.5;cursor:default}
+@media(max-width:840px){.proj-grid{grid-template-columns:1fr}}
+
+/* ─── Stack ──────────────────────────────────────────────────── */
+.stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:46px}
+.stack-col{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:24px;transition:transform .2s ease,border-color .2s ease}
+.stack-col:hover{transform:translateY(-3px);border-color:var(--indigo)}
+.stack-col h3{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--indigo);margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.stack-col h3 .n{font-size:.64rem;color:var(--ink-mut);margin-left:auto}
+.stack-col ul{list-style:none}
+.stack-col li{font-size:.9rem;padding:8px 0;border-bottom:1px solid var(--line)}
+.stack-col li:last-child{border-bottom:0}
+@media(max-width:980px){.stack-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.stack-grid{grid-template-columns:1fr}}
+
+/* ─── Formação + Certificações (linha do tempo) ──────────────── */
+#trilha{background:var(--paper-2);border-block:1px solid var(--line)}
+.trilha-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;margin-top:46px}
+.trilha-col h3{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--indigo);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.trilha-col h3::before{content:"";width:20px;height:2px;background:var(--grad);border-radius:2px}
+.item{display:flex;gap:18px;padding:0 0 22px;position:relative}
+.item:last-child{padding-bottom:0}
+.item::before{content:"";position:absolute;left:19px;top:44px;bottom:-2px;width:1.5px;background:var(--line)}
+.item:last-child::before{display:none}
+.badge{flex:0 0 40px;height:40px;border-radius:11px;display:grid;place-items:center;
+  font-family:var(--font-mono);font-weight:600;font-size:.64rem;letter-spacing:.03em;
+  background:var(--indigo);color:#fff;z-index:1;white-space:nowrap}
+.badge.soft{background:transparent;color:var(--ink-mut);border:1.5px dashed var(--line)}
+.item-info b{display:block;font-weight:600;font-size:.98rem;line-height:1.3}
+.item-info span{font-size:.85rem;color:var(--ink-mut)}
+@media(max-width:840px){.trilha-grid{grid-template-columns:1fr;gap:38px}}
+
+/* ─── Contato ────────────────────────────────────────────────── */
+.contato-box{background:
+  radial-gradient(620px 240px at 50% -60px,rgba(30,159,184,.22),transparent 62%),var(--indigo-deep);
+  border-radius:var(--radius);padding:66px 40px;text-align:center;color:#EAF0FF;
+  position:relative;overflow:hidden;box-shadow:0 36px 80px -36px rgba(28,26,78,.62)}
+.contato-box::before{content:"";position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--grad)}
+.contato-box h2{color:#fff}
+.contato-box .lead{color:#B7C2E8;margin:0 auto}
+.contato-box .cta-row{justify-content:center}
+.contato-box .btn-ghost{background:transparent;color:#EAF0FF;border-color:rgba(255,255,255,.3)}
+.contato-box .btn-ghost:hover{border-color:var(--cyan)}
+.contato-box .btn-primary{background:var(--cyan);color:var(--indigo-deep)}
+.contato-box .btn-primary:hover{box-shadow:0 12px 28px rgba(30,159,184,.4)}
+footer{padding:40px 0;text-align:center;font-family:var(--font-mono);font-size:.73rem;color:var(--ink-mut)}
+footer a{color:var(--ink-mut)}
+footer a:hover{color:var(--indigo)}
+
+/* ─── Reveal ─────────────────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ─── Movimento reduzido ─────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .p-icon::after,.p-link::after,.latent-head .live::before{animation:none}
+  .p-link::after{opacity:0}
+  .load,.latent{animation:none;opacity:1;transform:none}
+  .reveal{opacity:1;transform:none;transition:none}
+  .btn,.proj,.stack-col{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-inner">
+    <span class="nav-logo"><span class="mark" aria-hidden="true"></span> Willyam</span>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="menu">menu <span aria-hidden="true">≡</span></button>
+    <ul class="nav-links" id="menu">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#trilha">Formação</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Ticker de stack (decorativo). EDITE: troque os termos à vontade -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>PYTHON</span><span class="sep">/</span>
+    <span>AZURE OPENAI</span><span class="sep">/</span>
+    <span>AZURE AI SEARCH</span><span class="sep">/</span>
+    <span>SQL</span><span class="sep">/</span>
+    <span>SCIKIT-LEARN</span><span class="sep">/</span>
+    <span>LANGCHAIN</span><span class="sep">/</span>
+    <span>DOCUMENT INTELLIGENCE</span><span class="sep">/</span>
+    <span>POWER PLATFORM</span><span class="sep">/</span>
+    <span>PROMPT ENGINEERING</span><span class="sep">/</span>
+    <span>DOCKER</span><span class="sep">/</span>
+    <span>PANDAS</span><span class="sep">/</span>
+    <span>AZURE ML</span><span class="sep">/</span>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow load d1">Analista de Inteligência Artificial</p>
+      <h1 class="load d2">Sistemas que <em>entendem</em> linguagem, imagem e dados.</h1>
+      <p class="sub load d3">Projeto e implemento soluções de Machine Learning, LLMs, RAG, PLN e Visão Computacional no ecossistema Microsoft Azure.</p>
+      <div class="cta-row load d4">
+        <a class="btn btn-primary" href="#projetos">Ver projetos <span class="arr">↓</span></a>
+        <a class="btn btn-ghost" href="https://github.com/Wrasprodigio" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/willyam-rodrigo/" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+      </div>
+      <div class="hero-facts load d5">
+        <span class="fact"><span class="dot">●</span> <b>Microsoft AI-900</b></span>
+        <span class="fact"><span class="dot">●</span> <b>Pós em IA</b> · Gestão Pública</span>
+        <span class="fact"><span class="dot">●</span> <b>Azure AI</b> · stack principal</span>
+      </div>
+    </div>
+
+    <!-- ASSINATURA: painel de competências (claro e direto) -->
+    <div class="skills-panel">
+      <div class="skills-head">
+        <span>Áreas de atuação</span>
+        <span class="live">IA aplicada</span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <span class="skill-ic">🧠</span>
+          <div><b>Machine Learning</b><span>Modelagem e previsão</span></div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-ic">💬</span>
+          <div><b>LLMs &amp; RAG</b><span>Busca e geração com IA</span></div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-ic">📝</span>
+          <div><b>PLN</b><span>Análise de linguagem</span></div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-ic">👁️</span>
+          <div><b>Visão Computacional</b><span>Extração de dados visuais</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ BANDA RAG ═══ -->
+<div class="rag-band">
+  <div class="wrap rag-inner">
+    <p class="rag-ey">Arquitetura recorrente</p>
+    <p class="rag-title">Como estruturo aplicações com LLMs — o padrão RAG</p>
+    <div class="pipeline" role="img" aria-label="Fluxo RAG: documentos passam por embeddings, são indexados em um banco vetorial, recuperados e enviados a um LLM, que gera a resposta com citações.">
+      <div class="p-node" style="--d:0s">
+        <span class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg></span>
+        <span class="p-label">Documentos</span><span class="p-sub">PDFs · textos · bases</span>
+      </div>
+      <div class="p-link" style="--pd:.6s" aria-hidden="true"></div>
+      <div class="p-node" style="--d:1s">
+        <span class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="5" cy="7" r="1.6"/><circle cx="12" cy="4.5" r="1.6"/><circle cx="19" cy="8" r="1.6"/><circle cx="7" cy="17" r="1.6"/><circle cx="16" cy="18" r="1.6"/><path d="M6.3 8.2l4.4 7.4M13 5.8l-4.8 9.8M13.5 5.5l4.3 1.9M17.9 9.5l-1.4 6.9M8.6 17.3l5.8.5"/></svg></span>
+        <span class="p-label">Embeddings</span><span class="p-sub">chunking · vetores</span>
+      </div>
+      <div class="p-link" style="--pd:1.6s" aria-hidden="true"></div>
+      <div class="p-node" style="--d:2s">
+        <span class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-13M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/></svg></span>
+        <span class="p-label">Vector Store</span><span class="p-sub">Azure AI Search</span>
+      </div>
+      <div class="p-link" style="--pd:2.6s" aria-hidden="true"></div>
+      <div class="p-node" style="--d:3s">
+        <span class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="6" width="16" height="12" rx="3"/><circle cx="9.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><path d="M12 3v3M8 21h8"/></svg></span>
+        <span class="p-label">LLM</span><span class="p-sub">Azure OpenAI</span>
+      </div>
+      <div class="p-link" style="--pd:3.6s" aria-hidden="true"></div>
+      <div class="p-node" style="--d:4s">
+        <span class="p-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16v10H9l-5 4z"/><path d="M8.5 10.5l2.2 2.2 4.6-4.6"/></svg></span>
+        <span class="p-label">Resposta</span><span class="p-sub">com citações</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SOBRE ═══ -->
+<section id="sobre">
+  <div class="wrap sobre-grid">
+    <div class="reveal">
+      <p class="eyebrow">Sobre</p>
+      <h2>Foco total em Inteligência Artificial.</h2>
+      <!-- EDITE: ajuste a bio à sua história -->
+      <p class="lead">Trabalho com <strong>Inteligência Artificial</strong>, com foco em levar soluções do conceito à produção. Atuo em projetos de larga escala, com dados sensíveis e o rigor que ambientes reais exigem.</p>
+      <p class="lead" style="margin-top:15px">Trabalho com o ciclo completo — do dado bruto ao modelo em produção: engenharia de dados com SQL e Python, modelos de Machine Learning, aplicações com LLMs e RAG, processamento de linguagem natural e visão computacional, tudo sobre os serviços de IA do Microsoft Azure.</p>
+    </div>
+    <aside class="sobre-card reveal">
+      <h3>Áreas de atuação</h3>
+      <ul>
+        <li>Machine Learning: modelagem e previsão</li>
+        <li>LLMs e RAG para busca em documentos</li>
+        <li>PLN: classificação e análise de texto</li>
+        <li>Visão computacional e extração de dados</li>
+        <li>Automação com Power Platform + IA</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══ PROJETOS ═══ -->
+<section id="projetos">
+  <div class="wrap">
+    <p class="eyebrow">Projetos</p>
+    <h2>Portfólio em construção contínua.</h2>
+    <p class="lead">Todos os projetos usam <strong>dados públicos</strong> (Kaggle, dados.gov.br e outras fontes abertas) — nenhum dado interno ou sigiloso. Cada repositório documenta problema, arquitetura, decisões técnicas e resultados.</p>
+
+    <div class="proj-grid" id="projGrid">
+      <article class="proj reveal">
+        <div class="proj-top"><span class="proj-id">PROJ · 01</span><span class="status online">Online</span></div>
+        <h3>Assistente RAG para Documentos</h3>
+        <p>Assistente que responde perguntas sobre uma base de documentos com citação da fonte. Busca híbrida (vetorial + palavra-chave via Reciprocal Rank Fusion) e combate à alucinação.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">LangChain</span><span class="tag">FAISS</span><span class="tag">Groq LLM</span><span class="tag">Streamlit</span></div>
+        <div class="proj-links"><a href="https://github.com/Wrasprodigio/rag-assistente-documentos" target="_blank" rel="noopener">Repositório ↗</a><a href="https://rag-assistente-documentos.streamlit.app/" target="_blank" rel="noopener">Demo ↗</a></div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top"><span class="proj-id">PROJ · 02</span><span class="status plan">Planejado</span></div>
+        <h3>Modelo Preditivo de Machine Learning</h3>
+        <p>Pipeline completo de ML sobre dados públicos: análise exploratória, feature engineering, comparação de algoritmos, explicabilidade com SHAP e avaliação por métricas de negócio.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">XGBoost</span><span class="tag">Azure ML</span><span class="tag">SHAP</span></div>
+        <div class="proj-links"><span class="off">Repositório ↗</span><span class="off">Demo ↗</span></div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top"><span class="proj-id">PROJ · 03</span><span class="status plan">Planejado</span></div>
+        <h3>Extração Inteligente de Documentos</h3>
+        <p>Pipeline de visão computacional que extrai campos estruturados de documentos (formulários, comprovantes, contratos) com validação automática dos dados extraídos.</p>
+        <div class="tags"><span class="tag">Azure Document Intelligence</span><span class="tag">Azure Vision</span><span class="tag">Python</span><span class="tag">FastAPI</span></div>
+        <div class="proj-links"><span class="off">Repositório ↗</span><span class="off">Demo ↗</span></div>
+      </article>
+
+      <article class="proj reveal">
+        <div class="proj-top"><span class="proj-id">PROJ · 04</span><span class="status plan">Planejado</span></div>
+        <h3>Análise de Sentimento com PLN</h3>
+        <p>PLN aplicado a textos e notícias: classificação de sentimento, extração de entidades nomeadas e dashboard interativo com os resultados.</p>
+        <div class="tags"><span class="tag">Azure AI Language</span><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Power BI</span></div>
+        <div class="proj-links"><span class="off">Repositório ↗</span><span class="off">Demo ↗</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STACK ═══ -->
+<section id="stack">
+  <div class="wrap">
+    <p class="eyebrow">Stack</p>
+    <h2>Ferramentas do dia a dia.</h2>
+    <div class="stack-grid">
+      <div class="stack-col reveal">
+        <h3>IA &amp; ML <span class="n">01</span></h3>
+        <ul><li>Machine Learning</li><li>LLMs &amp; RAG</li><li>PLN / NLP</li><li>Visão Computacional</li><li>Prompt Engineering</li></ul>
+      </div>
+      <div class="stack-col reveal">
+        <h3>Azure <span class="n">02</span></h3>
+        <ul><li>Azure OpenAI</li><li>Azure AI Search</li><li>Azure ML</li><li>Document Intelligence</li><li>AI Language &amp; Vision</li></ul>
+      </div>
+      <div class="stack-col reveal">
+        <h3>Dados &amp; Código <span class="n">03</span></h3>
+        <ul><li>Python</li><li>SQL</li><li>Pandas · Scikit-learn</li><li>Git &amp; GitHub</li><li>APIs REST</li></ul>
+      </div>
+      <div class="stack-col reveal">
+        <h3>Plataformas <span class="n">04</span></h3>
+        <ul><li>Power Platform</li><li>Power Automate</li><li>Power BI</li><li>Streamlit / Gradio</li><li>Docker</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FORMAÇÃO + CERTIFICAÇÕES ═══ -->
+<section id="trilha">
+  <div class="wrap">
+    <p class="eyebrow">Formação &amp; Certificações</p>
+    <h2>Base acadêmica e trilha técnica.</h2>
+    <div class="trilha-grid">
+      <div class="trilha-col reveal">
+        <h3>Formação</h3>
+        <div class="item">
+          <span class="badge">PÓS</span>
+          <div class="item-info"><b>Inteligência Artificial para Gestão Pública</b><span>Pós-graduação · especialização</span></div> <!-- EDITE: instituição e ano -->
+        </div>
+        <div class="item">
+          <span class="badge">GRAD</span>
+          <div class="item-info"><b>Análise e Desenvolvimento de Sistemas</b><span>Graduação</span></div> <!-- EDITE: instituição e ano -->
+        </div>
+      </div>
+      <div class="trilha-col reveal">
+        <h3>Certificações</h3>
+        <div class="item">
+          <span class="badge">AI-900</span>
+          <div class="item-info"><b>Azure AI Fundamentals</b><span>Microsoft · certificado</span></div> <!-- EDITE: se quiser, adicione o link da credencial (Credly) -->
+        </div>
+        <div class="item">
+          <span class="badge soft">AI-102</span>
+          <div class="item-info"><b>Azure AI Engineer Associate</b><span>Próxima meta · em preparação</span></div>
+        </div>
+        <div class="item">
+          <span class="badge soft">DP-100</span>
+          <div class="item-info"><b>Azure Data Scientist Associate</b><span>Planejada</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTATO ═══ -->
+<section id="contato">
+  <div class="wrap">
+    <div class="contato-box reveal">
+      <p class="eyebrow" style="justify-content:center;color:var(--cyan)">Contato</p>
+      <h2>Vamos conversar sobre Inteligência Artificial?</h2>
+      <p class="lead">Aberto a trocas técnicas, colaborações e novos desafios em IA.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:contatowras@gmail.com">contatowras@gmail.com</a>
+        <a class="btn btn-ghost" href="https://github.com/Wrasprodigio" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/willyam-rodrigo/" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Willyam Rodrigo · <span id="ano"></span> · feito com HTML, CSS e café — <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">voltar ao topo ↑</a>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  /* ─── Ticker: duplica p/ loop ─── */
+  var track=document.getElementById('tickerTrack'); track.innerHTML+=track.innerHTML;
+
+  /* ─── Barra de progresso ─── */
+  var bar=document.getElementById('progress'),ticking=false;
+  window.addEventListener('scroll',function(){
+    if(ticking)return;ticking=true;
+    requestAnimationFrame(function(){
+      var h=document.documentElement;
+      bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';ticking=false;
+    });
+  },{passive:true});
+
+  /* ─── Menu mobile ─── */
+  var burger=document.getElementById('burger'),menu=document.getElementById('menu');
+  burger.addEventListener('click',function(){
+    var open=menu.classList.toggle('open');burger.setAttribute('aria-expanded',open);
+  });
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){menu.classList.remove('open');burger.setAttribute('aria-expanded','false');});
+  });
+
+  /* ─── Link ativo por seção ─── */
+  var links={};
+  document.querySelectorAll('.nav-links a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a;});
+  var secObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting&&links[e.target.id]){
+        Object.keys(links).forEach(function(k){links[k].classList.remove('active');});
+        links[e.target.id].classList.add('active');
+      }
+    });
+  },{rootMargin:'-42% 0px -55% 0px'});
+  document.querySelectorAll('section[id]').forEach(function(s){secObs.observe(s);});
+
+  /* ─── Reveal ─── */
+  if(!reduced){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+
+  /* ─── Brilho no cursor (cards de projeto) ─── */
+  if(window.matchMedia('(hover: hover)').matches){
+    document.querySelectorAll('.proj').forEach(function(card){
+      card.addEventListener('mousemove',function(e){
+        var r=card.getBoundingClientRect();
+        card.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        card.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
